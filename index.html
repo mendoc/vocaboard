@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
+
+    <title>Vocaboard</title>
+</head>
+
+<body class="container pt-5">
+    <h2 class="mt-4">Transcript</h2>
+    <div class="p-3" style="border: 1px solid gray; height: 300px; border-radius: 8px;">
+        <span id="final"></span>
+        <span id="interim" class="d-none">3</span>
+    </div>
+    <div class="mt-4">
+        <button class="btn btn-success" id="start">Start</button>
+        <button class="btn btn-danger" id="stop">Stop</button>
+        <p id="status" class="lead mt-3" style="display: none">Listening...</p>
+    </div>
+
+    <script>
+        if ("webkitSpeechRecognition" in window) {
+            // Initialize webkitSpeechRecognition
+            let speechRecognition = new webkitSpeechRecognition();
+
+            // String for the Final Transcript
+            let final_transcript = "";
+
+            // Set the properties for the Speech Recognition object
+            speechRecognition.continuous = true;
+            speechRecognition.interimResults = true;
+            speechRecognition.lang = "fr-FR";
+
+            // Callback Function for the onStart Event
+            speechRecognition.onstart = () => {
+                // Show the Status Element
+                document.querySelector("#status").style.display = "block";
+            };
+            speechRecognition.onerror = () => {
+                // Hide the Status Element
+                document.querySelector("#status").style.display = "none";
+            };
+            speechRecognition.onend = () => {
+                // Hide the Status Element
+                document.querySelector("#status").style.display = "none";
+
+                sendRequest(document.querySelector("#final").textContent);
+            };
+
+            speechRecognition.onresult = (event) => {
+                // Create the interim transcript string locally because we don't want it to persist like final transcript
+                let interim_transcript = "";
+
+                // Loop through the results from the speech recognition object.
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    // If the result item is Final, add it to Final Transcript, Else add it to Interim transcript
+                    if (event.results[i].isFinal) {
+                        final_transcript = event.results[i][0].transcript;
+                    } else {
+                        interim_transcript += event.results[i][0].transcript;
+                    }
+                }
+
+                // Set the Final transcript and Interim transcript.
+                document.querySelector("#final").innerHTML = final_transcript;
+                document.querySelector("#interim").innerHTML = interim_transcript;
+            };
+
+            // Set the onClick property of the start button
+            document.querySelector("#start").onclick = () => {
+                final_transcript = "";
+                document.querySelector("#final").innerHTML = "";
+
+                // Start the Speech Recognition
+                speechRecognition.start();
+            };
+            // Set the onClick property of the stop button
+            document.querySelector("#stop").onclick = () => {
+                // Stop the Speech Recognition
+                speechRecognition.stop();
+            };
+
+            function sendRequest(text2send) {
+                console.log(text2send)
+                const URL = "https://8888-mendoc-vocaboard-jsy5l57xwga.ws-eu98.gitpod.io/.netlify/functions/text-to-sql";
+
+                fetch(URL, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        request: text2send + "?"
+                    })
+                })
+                    .then(res => res.json())
+                    .then((res) => {
+                        console.log(res)
+                        document.querySelector("#final").innerHTML = res.data
+                    })
+            }
+        } else {
+            console.log("Speech Recognition Not Available");
+        }
+    </script>
+</body>
+
+</html>
