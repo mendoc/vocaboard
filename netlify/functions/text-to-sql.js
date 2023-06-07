@@ -1,4 +1,4 @@
-const { text2SQL } = require("../../utils");
+const { text2SQL, execSQL } = require("../../utils");
 const { preprompt } = require("../../preprompt");
 
 exports.handler = async function (event, context) {
@@ -7,20 +7,42 @@ exports.handler = async function (event, context) {
     if (event.httpMethod == "POST") {
         request = JSON.parse(event.body).request;
     } else {
-        request = "Bonjour";
+        request = "Propose-moi une requête au choix.";
     }
     console.log(request);
 
-    const response = await text2SQL(preprompt + request);
-    console.log('Réponse de ChatGPT:');
-    console.log(response);
+    let response = await text2SQL(preprompt + request);
 
-    return {
-        statusCode: 200,
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        },
-        body: JSON.stringify({ data: response }),
-    };
+    try {
+        response = response.substring(response.indexOf("{"));
+        let jsonResponse = JSON.parse(response);
+
+        const result = await execSQL(jsonResponse.sql);
+        console.log("result", result);
+        let data = result.data;
+        data.splice(10);
+
+        jsonResponse.data = data;
+
+        console.log('Réponse de ChatGPT:');
+        console.log(jsonResponse);
+        return {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            body: JSON.stringify({ ...jsonResponse }),
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            body: JSON.stringify({ ...error }),
+        };
+    }
 };

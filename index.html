@@ -1,113 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet" />
+    <link href="/assets/css/prism.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
     <title>Vocaboard</title>
+
+    <style>
+        body, .dataTables_wrapper {
+            font-family: 'Open Sans', sans-serif;
+        }
+    </style>
 </head>
 
-<body class="container pt-5">
-    <h2 class="mt-4">Transcript</h2>
-    <div class="p-3" style="border: 1px solid gray; height: 300px; border-radius: 8px;">
-        <span id="final"></span>
-        <span id="interim" class="d-none">3</span>
+<body>
+    <div class="container mx-auto px-4">
+        <h2 class="mt-4 mb-10 text-3xl font-bold border-b border-black-500">Vocaboard</h2>
+        <div class="mt-4 mb-10">
+            <button id="start" class="space-x-3">
+                <span
+                    class="py-1 px-3 bg-green-500 text-white text-sm font-semibold rounded-md shadow focus:outline-none">
+                    Appuyez ici pour parler
+                </span>
+                <span class="sm:hidden italic text-gray-800">Ou maintenez la touche <span
+                        class="rounded bg-gray-400 text-white py-1 px-1 text-xs">Espace</span></span>
+            </button>
+            <button class="hidden" id="stop">
+                <span
+                    class="py-1 px-3 bg-red-500 text-white text-sm font-semibold rounded-md shadow focus:outline-none">Terminer</span>
+                <span class="italic text-gray-800">En écoute...</span>
+            </button>
+        </div>
+        <p>Transcription</p>
+        <pre class="drop-shadow-md"><code class="language-text" id="final"></code></pre>
+        <div class="mt-10">
+            <table id="liste"></table>
+        </div>
+        <div class="mt-5 pt-3 border-t">
+            <p class="mt-20-">Resultat JSON</p>
+            <pre class="drop-shadow-md"><code class="language-json blur-sm-" id="json"></code></pre>
+            <p>Requête SQL</p>
+            <pre class="language-sql drop-shadow-md"><code class="language-sql" id="sql"></code></pre>
+        </div>
     </div>
-    <div class="mt-4">
-        <button class="btn btn-success" id="start">Start</button>
-        <button class="btn btn-danger" id="stop">Stop</button>
-        <p id="status" class="lead mt-3" style="display: none">Listening...</p>
-    </div>
 
-    <script>
-        if ("webkitSpeechRecognition" in window) {
-            // Initialize webkitSpeechRecognition
-            let speechRecognition = new webkitSpeechRecognition();
-
-            // String for the Final Transcript
-            let final_transcript = "";
-
-            // Set the properties for the Speech Recognition object
-            speechRecognition.continuous = true;
-            speechRecognition.interimResults = true;
-            speechRecognition.lang = "fr-FR";
-
-            // Callback Function for the onStart Event
-            speechRecognition.onstart = () => {
-                // Show the Status Element
-                document.querySelector("#status").style.display = "block";
-            };
-            speechRecognition.onerror = () => {
-                // Hide the Status Element
-                document.querySelector("#status").style.display = "none";
-            };
-            speechRecognition.onend = () => {
-                // Hide the Status Element
-                document.querySelector("#status").style.display = "none";
-
-                sendRequest(document.querySelector("#final").textContent);
-            };
-
-            speechRecognition.onresult = (event) => {
-                // Create the interim transcript string locally because we don't want it to persist like final transcript
-                let interim_transcript = "";
-
-                // Loop through the results from the speech recognition object.
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    // If the result item is Final, add it to Final Transcript, Else add it to Interim transcript
-                    if (event.results[i].isFinal) {
-                        final_transcript = event.results[i][0].transcript;
-                    } else {
-                        interim_transcript += event.results[i][0].transcript;
-                    }
-                }
-
-                // Set the Final transcript and Interim transcript.
-                document.querySelector("#final").innerHTML = final_transcript;
-                document.querySelector("#interim").innerHTML = interim_transcript;
-            };
-
-            // Set the onClick property of the start button
-            document.querySelector("#start").onclick = () => {
-                final_transcript = "";
-                document.querySelector("#final").innerHTML = "";
-
-                // Start the Speech Recognition
-                speechRecognition.start();
-            };
-            // Set the onClick property of the stop button
-            document.querySelector("#stop").onclick = () => {
-                // Stop the Speech Recognition
-                speechRecognition.stop();
-            };
-
-            function sendRequest(text2send) {
-                console.log(text2send)
-                const URL = "https://8888-mendoc-vocaboard-jsy5l57xwga.ws-eu98.gitpod.io/.netlify/functions/text-to-sql";
-
-                fetch(URL, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        request: text2send + "?"
-                    })
-                })
-                    .then(res => res.json())
-                    .then((res) => {
-                        console.log(res)
-                        document.querySelector("#final").innerHTML = res.data
-                    })
-            }
-        } else {
-            console.log("Speech Recognition Not Available");
-        }
-    </script>
+    <script src="/assets/js/jquery-3.7.0.min.js" defer></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" defer></script>
+    <script src="/assets/js/prism.js" defer></script>
+    <script src="/assets/js/utils.js" defer></script>
+    <script src="/assets/js/app.js" defer></script>
 </body>
 
 </html>
