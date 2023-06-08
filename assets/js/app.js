@@ -8,6 +8,9 @@ if ("webkitSpeechRecognition" in window) {
     // to control if listening or not
     let isListening = false;
 
+    // for datatable
+    let table = $('#liste').DataTable();
+
     // Set the properties for the Speech Recognition object
     speechRecognition.continuous = true;
     speechRecognition.interimResults = true;
@@ -72,23 +75,32 @@ if ("webkitSpeechRecognition" in window) {
     // Set the onClick property of the stop button
     "#stop".click(stop);
 
-    function loadList(data) {
+    function loadList(title, data) {
         let headers = [];
+        let values = [];
 
         if (data.length > 0) {
-            const first = data[0];
-            headers = Object.keys(first);
+            headers = Object.keys(data[0]).map(h => {
+                return { title: h.ucfirst() }
+            });
+
             console.log(headers)
+
+            for (let i in data) {
+                values.push(Object.values(data[i]));
+            }
+            console.log(values)
         }
 
-        // Init datatable
-        let table = new DataTable('#liste', {
-            columns: [
-                { data: 'id' },
-                { data: 'nom' },
-                { data: 'email' },
-                { data: 'adresse' }
-            ]
+
+        table.destroy();
+        $('#liste').empty();
+
+        // Update datatable
+        "#list-title".text(title)
+        table = $('#liste').DataTable({
+            columns: headers,
+            data: values
         });
     }
 
@@ -139,7 +151,7 @@ if ("webkitSpeechRecognition" in window) {
                     console.log(jsonFormatted)
                     "#json".text(jsonFormatted)
                     "#sql".text(res.sql)
-                    loadList(res.data)
+                    loadList(res.title, res.data)
                     Prism.highlightAll();
                 }
             })

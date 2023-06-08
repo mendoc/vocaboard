@@ -17,7 +17,8 @@
     <title>Vocaboard</title>
 
     <style>
-        body, .dataTables_wrapper {
+        body,
+        .dataTables_wrapper {
             font-family: 'Open Sans', sans-serif;
         }
     </style>
@@ -44,9 +45,17 @@
         <p>Transcription</p>
         <pre class="drop-shadow-md"><code class="language-text" id="final"></code></pre>
         <div class="mt-10">
-            <table id="liste"></table>
+            <h2 id="list-title" class="mt-4 mb-3 text-lg font-bold">Résulats de la requête</h2>
+            <table id="liste" class="border border-black-100">
+                <thead>
+                    <tr>
+                        <th>Liste</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-        <div class="mt-5 pt-3 border-t">
+        <div class="mt-5 pt-3 border-t hidden">
             <p class="mt-20-">Resultat JSON</p>
             <pre class="drop-shadow-md"><code class="language-json blur-sm-" id="json"></code></pre>
             <p>Requête SQL</p>
@@ -54,7 +63,7 @@
         </div>
     </div>
 
-    <script src="/assets/js/jquery-3.7.0.min.js" defer></script>
+    <script src="//code.jquery.com/jquery-3.5.1.js" defer></script>
     <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" defer></script>
     <script src="/assets/js/prism.js" defer></script>
     <script src="/assets/js/utils.js" defer></script>

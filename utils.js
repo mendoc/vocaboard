@@ -40,6 +40,7 @@ async function execSQL(sql) {
     
     if (con) {
         let [result] = await con.execute(sql);
+        con.end();
 
         if (result) {
             console.log(result.length);

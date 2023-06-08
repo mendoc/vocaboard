@@ -20,7 +20,7 @@ exports.handler = async function (event, context) {
         const result = await execSQL(jsonResponse.sql);
         console.log("result", result);
         let data = result.data;
-        data.splice(10);
+        //data.splice(10);
 
         jsonResponse.data = data;
 

@@ -682,6 +682,10 @@ video {
   margin-top: 1.25rem;
 }
 
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -779,10 +783,6 @@ video {
 
 .hidden {
   display: none;
-}
-
-.w-1\/2 {
-  width: 50%;
 }
 
 .flex-shrink {
@@ -1954,6 +1954,16 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .font-bold {
