@@ -1,11 +1,9 @@
 install:
 	npm i
-	npm install netlify-cli -g
-	netlify login
-	netlify dev
+	composer install
 
 dev:
-	netlify dev
+	php -S localhost:8080 -t .
 
 style:
 	npx tailwindcss -i ./assets/css/config.css -o ./assets/css/style.css --watch

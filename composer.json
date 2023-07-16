@@ -1,0 +1,29 @@
+{
+  "name": "dimitriongoua/vocaboard",
+  "description": "Tableau de bord avec la voix",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "files": [
+      "src/helpers.php",
+      "src/Utils.php",
+      "src/controllers/LLMController.php",
+      "src/LLMManager.php"
+    ],
+    "psr-0": {
+      "Vocaboard\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Dimitri ONGOUA",
+      "email": "ongouadimitri5@gmail.com"
+    }
+  ],
+  "require": {
+    "vlucas/phpdotenv": "^5.5",
+    "guzzlehttp/guzzle": "^7.7",
+    "steampixel/simple-php-router": "^0.7.1",
+    "illuminate/database": "^10.15"
+  }
+}
