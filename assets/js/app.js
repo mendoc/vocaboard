@@ -92,6 +92,7 @@ if ("webkitSpeechRecognition" in window) {
             console.log(values)
         }
 
+        console.log("ici", headers);
 
         table.destroy();
         $('#liste').empty();
@@ -132,7 +133,7 @@ if ("webkitSpeechRecognition" in window) {
     function sendRequest(text2send) {
         console.log(text2send)
 
-        const URL = "/.netlify/functions/text-to-sql";
+        const URL = "/process-request";
 
         fetch(URL, {
             method: 'POST',
@@ -154,7 +155,7 @@ if ("webkitSpeechRecognition" in window) {
                     loadList(res.title, res.data)
                     Prism.highlightAll();
                 }
-            })
+            }).catch(console.error)
     }
 } else {
     console.log("Speech Recognition Not Available");

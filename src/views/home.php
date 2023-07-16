@@ -55,7 +55,7 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="mt-5 pt-3 border-t hidden">
+        <div class="mt-5 pt-3 border-t">
             <p class="mt-20-">Resultat JSON</p>
             <pre class="drop-shadow-md"><code class="language-json blur-sm-" id="json"></code></pre>
             <p>Requête SQL</p>

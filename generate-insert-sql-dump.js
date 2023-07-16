@@ -2,6 +2,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 
 const outputFilePath = 'insert-dump.sql';
+const tableName = 'participants';
 
 // Création du fichier de sortie
 const outputStream = fs.createWriteStream(outputFilePath, { flags: 'a' });
@@ -22,7 +23,7 @@ fs.createReadStream('data.csv')
       // Échappe les caractères spéciaux pour éviter les problèmes d'insertion
       return value.replace(/'/g, "\\'");
     });
-    const sql = `INSERT INTO candidats (${columns}) VALUES ('${escapedValues.join("', '")}');`;
+    const sql = `INSERT INTO ${tableName} (${columns}) VALUES ('${escapedValues.join("', '")}');`;
     writeSqlQuery(sql);
   })
   .on('end', () => {
