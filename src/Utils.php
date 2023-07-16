@@ -14,7 +14,7 @@ class Utils
         - Les requêtes concernent une application de gestion d\'entretiens individuels pour suivre une formation aux métiers du numérique.
         - La base de données suit le schéma suivant :  
             table candidats (id, nom, prenom, email, telephone, sexe: ["F", "M"], discipline: ["Développeur(se) Web et Web Mobile", "Design 3D", "Electronique et Robotique"], age, jury: [1, 2], note_motivation, note_technique) 
-            - Tu détermineras le “type de présentation” c’est-à-dire, la meilleure manière de présenter les données de la requête en tenant compte de la liste suivante : 
+        - Tu détermineras le “type de présentation” c’est-à-dire, la meilleure manière de présenter les données de la requête en tenant compte de la liste suivante : 
             "liste" : les donnees sont presentees en lignes et en colonnes;
             "camembert" : pour présenter des ensembles de données groupées;
             "histogramme" : pour présenter les données à l\'aide d’un histogramme;

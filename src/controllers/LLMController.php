@@ -14,10 +14,15 @@ class LLMController
         $request = $params["request"];
 
         $llm = new LLMManager("default");
-        $llmResponse = $llm->text2SQL(Utils::getPreprompt() . $request);
+        $request = Utils::getPreprompt() . $request;
+        $llmResponse = $llm->text2SQL($request);
         $cleanResponse = trim(substr($llmResponse, strpos($llmResponse, "{")));
         $jsonResponse = json_decode($cleanResponse, true);
 
+        if (!str_contains($jsonResponse["sql"], "SELECT")) {
+            return json('{"error": "true", "message": "Request unauthorized."}');
+        } 
+        
         $result = BDDProjet::select($jsonResponse["sql"]);
 
         if (!$result or count($result) === 0) {
